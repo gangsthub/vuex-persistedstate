@@ -358,3 +358,17 @@ it("fetches state from storage before the plugin is used", () => {
     persisted: "before"
   });
 });
+
+it("throws specific error if assertion throws error on initializing plugin", () => {
+  const errorMessage = "no storage space left";
+  const assertStorage = () => {
+    throw new Error(errorMessage);
+  };
+  expect(() => createPersistedState({ assertStorage })).toThrow(errorMessage);
+});
+
+it("initializes the plugin if no error is thrown", () => {
+  const storage = new Storage();
+  const assertStorage = () => {};
+  expect(() => createPersistedState({ storage, assertStorage })).not.toThrow();
+});
